@@ -1,0 +1,35 @@
+{
+  "page" : {
+    "text" : {
+      "title": "",
+      "author": ""
+    }
+  },
+  "fulltext" : {
+    "text" : {
+      "subtitle": ""
+    },
+    "textarea": {
+      "content": ""
+    }
+  },
+  "halfandhalf" : {
+    "text" : {
+      "subtitle": "",
+      "img_title": "",
+      "img_source": ""
+    },
+    "textarea": {
+      "content": ""
+    },
+    "file": {
+      "img": ""
+    }
+  },
+  "references" : {
+    "text": {
+      "source": "",
+      "url": ""
+    }
+  }
+}

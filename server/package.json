@@ -1,0 +1,28 @@
+{
+  "name": "kosher_salt",
+  "version": "0.1.0",
+  "description": "Static site generator with undo functionality",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SangJunBak/kosher_salt.git"
+  },
+  "keywords": [
+    "kosher",
+    "salt"
+  ],
+  "author": "Sang Jun Bak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SangJunBak/kosher_salt/issues"
+  },
+  "homepage": "https://github.com/SangJunBak/kosher_salt#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "require-dir": "^1.0.0"
+  }
+}
