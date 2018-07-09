@@ -9,7 +9,7 @@ const DynamicForm = (props) => {
     let dynamicInputs = [];
     if(currModule && currModuleInput){
 
-        Object.keys(moduleJSONObject).forEach((inputName)=> {
+        for(let inputName in moduleJSONObject){
             let inputObject = moduleJSONObject[inputName];
 
             if (currModuleInput === inputName) {
@@ -45,7 +45,7 @@ const DynamicForm = (props) => {
                     dynamicInputs = undefined;
                 }
             }
-        });
+        };
     }
 
     return dynamicInputs;

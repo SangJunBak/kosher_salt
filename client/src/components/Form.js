@@ -15,15 +15,16 @@ class Form extends React.Component{
         super(props);
         this.state = {
             stage: 'initStage',
-            dir: "Demo",
+            dir: "",
             currModule: undefined,
             currModuleInput: "text",
-            filter: undefined,
+            filter: 'none',
             //Error Check and misc.
             showAlert: false,
             alertMessage: "",
         }
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleCurrentModuleChange = this.handleCurrentModuleChange.bind(this);
         this.handleDynamicFormInputChange = this.handleDynamicFormInputChange.bind(this);
         this.handleShowAlert = this.handleShowAlert.bind(this);
     }
@@ -33,31 +34,33 @@ class Form extends React.Component{
     }
 
     initializeJSON(fileName){
-        Object.keys(fileName).forEach((key) => {
-            const moduleName = key;
-            const input = fileName[moduleName];
-            const text = input["text"];
-            const textarea = input["textarea"];
-            const file = input["file"];
-            const select = input["select"];
+        for(let moduleName in fileName) {
+            const moduleJSONObject = fileName[moduleName];
+            let text = moduleJSONObject["text"];
+            const textarea = moduleJSONObject["textarea"];
+            const file = moduleJSONObject["file"];
+            const select = moduleJSONObject["select"];
             let tempModule = {};
 
-            (text) && Object.keys(text).forEach((key) => {
-                tempModule[key] = text[key];
-            });
-            (textarea) && Object.keys(textarea).forEach((key) => {
-                tempModule[key] = textarea[key];
-            });
-            (file) && Object.keys(file).forEach((key) => {
-                tempModule[key] = file[key];
-            });
-            (select) && Object.keys(select).forEach((key) => {
-                tempModule[key] = "";
-            });
+            for (let property in text) {
+                tempModule[property] = text[property];
+            }
+
+            for (let property in textarea) {
+                tempModule[property] = textarea[property];
+            }
+
+            for (let property in file) {
+                tempModule[property] = file[property];
+            }
+
+            for (let property in select) {
+                tempModule[property] = "";
+            }
             this.setState({
                 [moduleName]: tempModule
             });
-        });
+        }
     }
 
     handleShowAlert(alertMessage){
@@ -96,6 +99,19 @@ class Form extends React.Component{
             });
     };
 
+    handleClearAllModuleData = ()=> {
+
+        axios.post(`/clearAllModuleData`, this.state)
+            .then(res => {
+                this.handleShowAlert("All Module Data Cleared");
+            })
+        .then(()=> {
+            this.setState({
+                stage: "initStage"
+            });
+        });
+    };
+
     handleInputChange(e){
         const target = e.target;
         const value = target.value;
@@ -103,6 +119,19 @@ class Form extends React.Component{
         this.setState({
             [name]: value
         });
+    }
+
+    handleCurrentModuleChange(e){
+        this.handleInputChange(e);
+        const currModule = e.target.value;
+        const moduleJSONObject = moduleData[currModule];
+
+        if(moduleJSONObject) {
+            const firstAvailableInput = Object.keys(moduleJSONObject)[0];
+            this.setState({
+                "currModuleInput": firstAvailableInput
+            });
+        }
     }
 
     handleDynamicFormInputChange(e){
@@ -119,7 +148,7 @@ class Form extends React.Component{
     }
     //Renders the entire page every time a state changes.
     render() {
-        const {currModule,currModuleInput} = this.state;
+        const {currModule,currModuleInput,filter} = this.state;
         const moduleStateObject = this.state[currModule];
         const moduleJSONObject = moduleData[currModule];
         // console.log(this.state);
@@ -132,27 +161,32 @@ class Form extends React.Component{
             <form>
 
                 <div className="row">
-                    <div className="col">
+                    <div className="col-sm-12 col-md">
                         <TextInput name="dir" value={this.state.dir} inputHandler={this.handleInputChange}/>
                     </div>
-                    <div className="col">
-                        <SelectInput name="filter"  options={['pre','body','post']} inputHandler={this.handleInputChange} initialValueTitle="None"/>
+                    <div className="col-sm-12 col-md ">
+                        <ButtonSelectInput
+                            name="filter"
+                            options={['none','pre','body','post']}
+                            inputHandler={this.handleInputChange}
+                            selectedValue={filter}
+                        />
                     </div>
                 </div>
 
                 <div className="row">
-                    <div className="col">
-                        <SelectInput name='currModule' options={Object.keys(moduleData)} inputHandler={this.handleInputChange}/>
+                    <div className="col-sm-12 col-md">
+                        <SelectInput
+                            name='currModule'
+                            options={Object.keys(moduleData)}
+                            inputHandler={this.handleCurrentModuleChange}/>
                     </div>
-                </div>
-
-                <div className="row">
-                    <div className="col">
-                        <div className="form-group">
+                    <div className="col-sm-12 col-md">
                         {this.state[currModule] &&  <ButtonSelectInput name="currModuleInput"
-                                                                        options={Object.keys(moduleData[currModule])}
-                                                                        inputHandler={this.handleInputChange}/>}
-                        </div>
+                                                                       options={Object.keys(moduleData[currModule])}
+                                                                       inputHandler={this.handleInputChange}
+                                                                       selectedValue={currModuleInput}
+                        />}
                     </div>
                 </div>
 
@@ -171,6 +205,7 @@ class Form extends React.Component{
                             <NormalButton buttonHandler={this.handleAddModule} type="primary">Add</NormalButton>
                             <NormalButton buttonHandler={this.handleUndoModule} type="warning">Undo</NormalButton>
                             <NormalButton buttonHandler={this.handleUpdateFile} type="primary">Update</NormalButton>
+                            <NormalButton buttonHandler={this.handleClearAllModuleData} type="warning">Clear All Module Data</NormalButton>
                         </div>
                     </div>
                 </div>
