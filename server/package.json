@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/SangJunBak/kosher_salt#readme",
   "dependencies": {
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "require-dir": "^1.0.0"
   }
 }
